@@ -101,7 +101,7 @@ const formatTime = (timeString) => {
     hourly.map(hour => {
         console.log(hour);
         return<>
-        <div key={hour.dt} className="bg-white p-6 rounded-xl shadow-lg mt-3">
+        <div key={hour.dt} className="bg-white p-6 rounded-xl shadow-lg mt-5">
             <div className="flex justify-between">
 
                 <div >
