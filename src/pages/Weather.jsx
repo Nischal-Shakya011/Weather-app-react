@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import Icon from "../components/Icons";
 
 export default function Weather(){
 
@@ -30,7 +31,7 @@ useEffect(()=>{
             setWeather(res.data)
             // setIsLoading(false)
         }) 
-        axios.get(`http://api.openweathermap.org/data/2.5/forecast?lat=${position.latitude}&lon=${position.longitude}&cnt=24&appid=${key}`)
+        axios.get(`http://api.openweathermap.org/data/2.5/forecast?lat=${position.latitude}&lon=${position.longitude}&cnt=12&appid=${key}`)
         .then((res)=>{
             // console.log(res.data.list);
             setHourly(res.data.list);
@@ -42,9 +43,9 @@ useEffect(()=>{
 const formatTime = (timeString) => {
     const date = new Date(timeString);
     return date.toLocaleTimeString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
       hour: "numeric",
       minute: "numeric",
       hour12: true,
@@ -53,10 +54,9 @@ const formatTime = (timeString) => {
 
     return(
         <>
-        <div className="flex justify-center">
-            
-                
-            <div className=" bg-blue-900 p-6 w-[30%] text-center text-white mt-10 rounded-xl">
+        <div className="bg-zinc-200 p-6">
+        <div className=" container py-5">   
+            <div className=" bg-white w-[80%] p-6 mt-2  rounded-xl">
         <div className="text-2xl font-bold">Current Weather</div>
        {
         weather
@@ -64,33 +64,23 @@ const formatTime = (timeString) => {
         !isloading
               ?
               <>
-        <div className="mt-3 text-lg font-semibold">
+        <div className="flex justify-between mt-3">
+            <div className="flex gap-5">
+            <div>
+                <Icon weth={weather.weather[0].main}/>
             <div>{weather.weather[0].description}</div>
-            <div>Location: {weather.name}</div>
-            <div>Country: {weather.sys.country}</div>
-            <div>Temperature: {weather.main.temp} K</div>
-            <div>Humidity: {weather.main.humidity}%</div>
-            <div>Pressure: {weather.main.pressure} pa</div>
-            {/* <div>{weather.weather[0].icon}</div> */}
-        </div>
-
-        <div>
-            <div className="mt-5 font-bold text-xl">Hourly</div>
-{
-    hourly.map(hour => {
-        console.log(hour);
-        return<>
-            <div>Temperature: {hour.main.temp}</div>
-            <div>Time: {formatTime(hour.dt_txt)}</div>
-            {/* <div>Time: {hour.dt_txt}</div> */}
-        </>
-    })
-}
-            {/* <div>Date and Time</div>
-            <div>Temperature: {hourly[index].main.temp}</div>
-                <div>Humidity: {hourly[index].main.humidity}</div> */}
-            {/* <button className="bg-red-600 p-2 rounded-lg" disabled={index === daily.length - 1} onClick={()=>{setIndex((ind) => ind + 1)}}>Next</button><br />
-            <button className="bg-red-600 p-2 rounded-lg mt-2" disabled={index === 0} onClick={()=>{{setIndex((ind) => ind -1)}} }>Previous</button> */}
+            </div>
+            <div className="font-bold text-5xl">{Math.round(weather.main.temp - 273.15)}°C</div>
+            <div>
+            <div><span className="font-bold">Humidity:</span> {weather.main.humidity}%</div>
+            <div><span className="font-bold">Pressure:</span> {weather.main.pressure} pa</div>
+            <div><span className="font-bold">Wind:</span> {weather.wind.speed} km/h</div>
+            </div>
+            </div>
+            <div>
+            <div><span className="font-bold">Location:</span> {weather.name}</div>
+            <div><span className="font-bold">Country:</span> {weather.sys.country}</div>
+            </div>
         </div>
 
         </>
@@ -98,8 +88,54 @@ const formatTime = (timeString) => {
          <div>Loading.....</div>
         }
         </div>
-       
+        </div>
+
+        {
+          weather
+          &&
+          !isloading
+                ?   
+                <div className="container">
+            <div className="mt-5 font-bold text-2xl">Hourly Weather Forecast</div>
+{
+    hourly.map(hour => {
+        console.log(hour);
+        return<>
+        <div key={hour.dt} className="bg-white p-6 rounded-xl shadow-lg mt-3">
+            <div className="flex justify-between">
+
+                <div >
+                <div className="flex">
+                <div><Icon weth={hour.weather[0].main}/></div>
+                <div className="font-bold text-5xl">{Math.round(hour.main.temp - 273.15)}°C</div>
+                </div>
+                <div>{hour.weather[0].description}</div>
+                </div>
+
+                <div className="font-bold text-xl">{formatTime(hour.dt_txt)}</div>
+
+            </div>
+            <div className="flex justify-between gap-7 mt-4">
+                <div className="w-full">
+                    <div className="flex justify-between font-semibold text-lg text-zinc-800 border-b-2 border-zinc-300 p-2"><span>Wind</span> <span>{hour.wind.speed}km/hr</span></div>
+                    <div className="flex justify-between font-semibold text-lg text-zinc-800 border-b-2 border-zinc-300 p-2"><span>Cloud cover</span> <span>{hour.clouds.all}%</span></div>
+                    <div className="flex justify-between font-semibold text-lg text-zinc-800 border-b-2 border-zinc-300 p-2"><span>Pressure</span> <span>{hour.main.pressure}pa</span></div>
+                </div>
+                <div className="w-full">
+                    <div className="flex justify-between font-semibold text-lg text-zinc-800 border-b-2 border-zinc-300 p-2"><span>Gust</span> <span>{hour.wind.gust}Km/h</span></div>
+                    <div className="flex justify-between font-semibold text-lg text-zinc-800 border-b-2 border-zinc-300 p-2"><span>Humidity</span> <span>{hour.main.humidity}%</span></div>
+                    <div className="flex justify-between font-semibold text-lg text-zinc-800 border-b-2 border-zinc-300 p-2"><span>Max Temerature</span> <span>{Math.round(hour.main.temp_max - 273.15)}°C</span></div>
+                </div>
+            </div>
         
+            </div>
+        </>
+    })
+}
+        </div>
+        :
+        <div>Loading.....</div>
+        }
         </div>
         </>
     )
