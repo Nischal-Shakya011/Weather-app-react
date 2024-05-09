@@ -13,7 +13,8 @@ const [hourly, setHourly] = useState()
 const [isloading, setIsLoading] = useState(false)
 const [selectedDate, setSelectedDate] = useState(new Date())
 // console.log(selectedDate);
-
+const [search, setSearch] = useState("")
+// console.log(search);
 let key = "daae8c6a3b119e3e18b67428049acdb4"
 
 
@@ -42,6 +43,32 @@ useEffect(()=>{
     }
 },[position])
 
+function handleSearch(){
+
+    setIsLoading(true)
+    // setWeather(null)
+    axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=daae8c6a3b119e3e18b67428049acdb4`)
+    .then((res)=>{
+        // console.log(res.data);
+        setWeather(res.data)
+        // setIsLoading(false)
+    }) 
+    .catch(err =>{
+        console.log(err);
+    })
+
+    axios.get(`http://api.openweathermap.org/data/2.5/forecast?q=${search}&cnt=40&appid=${key}`)
+    .then((res)=>{
+        // console.log(res.data.list);
+        setHourly(res.data.list);
+        setIsLoading(false)
+    })
+    .catch(err =>{
+        console.log(err);
+    })
+
+}
+//
 const formatTime = (timeString) => {
     const date = new Date(timeString);
     return date.toLocaleTimeString("en-US", {
@@ -67,7 +94,7 @@ const formatTime = (timeString) => {
   }
 
 let filteredDate =hourly && hourly.filter((dat)=>{
-    console.log(dat);
+    // console.log(dat);
 let date = new Date(dat.dt_txt)
 return(
     date.getDate() === selectedDate.getDate() &&
@@ -92,8 +119,8 @@ return(
         <div className="flex justify-between mt-3">
             <div className="flex gap-5">
             <div>
-                <Icon weth={weather.weather[0].main}/>
-            <div>{weather.weather[0].description}</div>
+                <div><Icon weth={weather.weather[0].main}/></div>
+                <div>{weather.weather[0].description}</div>
             </div>
             <div className="font-bold text-5xl">{Math.round(weather.main.temp - 273.15)}°C</div>
             <div>
@@ -123,15 +150,21 @@ return(
           filteredDate
                 ?   
                 <div className="container">
+                    <div className="flex justify-between">
             <div className="mt-5 font-bold text-2xl">Hourly Weather Forecast</div>
+            <div className="flex gap-4">
+            <input type="text" className="outline-none p-2 rounded-lg" onChange={((e)=>{setSearch(e.target.value)})} placeholder="Search City"/>
+            <button onClick={handleSearch} className={"bg-green-800 p-2 rounded-lg w-28 text-white text-semibold"}>Search</button>
+            </div>
+            </div>
 {
     filteredDate.map(hour => {
-        console.log(hour);
+        // console.log(hour);
         return<>
         <div key={hour.dt} className="bg-white p-6 rounded-xl shadow-lg mt-5">
             <div className="flex justify-between">
 
-                <div >
+                <div>
                 <div className="flex">
                 <div><Icon weth={hour.weather[0].main}/></div>
                 <div className="font-bold text-5xl">{Math.round(hour.main.temp - 273.15)}°C</div>
