@@ -81,7 +81,7 @@ return(
         <>
         <div className="bg-zinc-200 p-6">
         <div className=" container py-5">   
-            <div className=" bg-white w-[80%] p-6 mt-2  rounded-xl">
+            <div className=" bg-white w-full p-6 mt-2  rounded-xl">
         <div className="text-2xl font-bold">Current Weather</div>
        {
         weather
