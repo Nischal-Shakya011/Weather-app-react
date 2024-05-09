@@ -11,6 +11,8 @@ const [weather, setWeather] = useState()
 const [hourly, setHourly] = useState()
 // const [index, setIndex] = useState(0)
 const [isloading, setIsLoading] = useState(false)
+const [selectedDate, setSelectedDate] = useState(new Date())
+// console.log(selectedDate);
 
 let key = "daae8c6a3b119e3e18b67428049acdb4"
 
@@ -31,7 +33,7 @@ useEffect(()=>{
             setWeather(res.data)
             // setIsLoading(false)
         }) 
-        axios.get(`http://api.openweathermap.org/data/2.5/forecast?lat=${position.latitude}&lon=${position.longitude}&cnt=12&appid=${key}`)
+        axios.get(`http://api.openweathermap.org/data/2.5/forecast?lat=${position.latitude}&lon=${position.longitude}&cnt=40&appid=${key}`)
         .then((res)=>{
             // console.log(res.data.list);
             setHourly(res.data.list);
@@ -51,6 +53,29 @@ const formatTime = (timeString) => {
       hour12: true,
     });
   };
+
+  function handleTomorrow(){
+    let tomorrow = new Date(selectedDate)
+    tomorrow.setDate(selectedDate.getDate() + 1)
+    setSelectedDate(tomorrow)
+  }
+
+  function handlePrevious(){
+    let previous = new Date(selectedDate)
+    previous.setDate(selectedDate.getDate() - 1)
+    setSelectedDate(previous)
+  }
+
+let filteredDate =hourly && hourly.filter((dat)=>{
+    console.log(dat);
+let date = new Date(dat.dt_txt)
+return(
+    date.getDate() === selectedDate.getDate() &&
+    date.getMonth() === selectedDate.getMonth() &&
+    date.getFullYear() === selectedDate.getFullYear()
+)
+
+  })
 
     return(
         <>
@@ -94,11 +119,13 @@ const formatTime = (timeString) => {
           weather
           &&
           !isloading
+          &&
+          filteredDate
                 ?   
                 <div className="container">
             <div className="mt-5 font-bold text-2xl">Hourly Weather Forecast</div>
 {
-    hourly.map(hour => {
+    filteredDate.map(hour => {
         console.log(hour);
         return<>
         <div key={hour.dt} className="bg-white p-6 rounded-xl shadow-lg mt-5">
@@ -132,6 +159,10 @@ const formatTime = (timeString) => {
         </>
     })
 }
+<div className="flex justify-center gap-5 mt-8">
+<button onClick={handlePrevious} className='bg-green-800 p-2 rounded-lg text-white text-lg font-semibold '>Previous Day</button>
+<button onClick={handleTomorrow} className='bg-green-800 p-2 rounded-lg text-white text-lg font-semibold '>Next Day</button>
+</div>
         </div>
         :
         <div>Loading.....</div>
