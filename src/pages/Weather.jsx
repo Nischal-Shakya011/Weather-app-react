@@ -15,6 +15,8 @@ const [selectedDate, setSelectedDate] = useState(new Date())
 // console.log(selectedDate);
 const [search, setSearch] = useState("")
 // console.log(search);
+const [error, setError] = useState()
+console.log(error);
 let key = "daae8c6a3b119e3e18b67428049acdb4"
 
 
@@ -64,7 +66,8 @@ function handleSearch(){
         setIsLoading(false)
     })
     .catch(err =>{
-        console.log(err);
+        // console.log(err.response.data);
+        setError(err.response.data)
     })
 
 }
@@ -106,6 +109,9 @@ return(
 
     return(
         <>
+        {
+            !error 
+            ?
         <div className="bg-zinc-200 p-6">
         <div className=" container py-5">   
             <div className=" bg-white w-full p-6 mt-2  rounded-xl">
@@ -155,6 +161,9 @@ return(
             <div className="flex gap-4">
             <input type="text" className="outline-none p-2 rounded-lg" onChange={((e)=>{setSearch(e.target.value)})} placeholder="Search City"/>
             <button onClick={handleSearch} className={"bg-green-800 p-2 rounded-lg w-28 text-white text-semibold"}>Search</button>
+           { error
+            &&
+            <small>{error.message}</small>}
             </div>
             </div>
 {
@@ -201,6 +210,13 @@ return(
         <div>Loading.....</div>
         }
         </div>
+        :
+        <div className="flex justify-center">
+        <div className="text-xl font-bold p-6 border-2 border-red-700 rounded-xl shadow-2xl mt-[15%]">
+            {error.message}
+        </div>
+        </div>
+        }
         </>
     )
 }
