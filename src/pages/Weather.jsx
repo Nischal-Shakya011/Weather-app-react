@@ -114,8 +114,7 @@ return(
     return(
         <>
         {
-            // !error 
-            // ?
+            
         <div className="bg-zinc-200 p-6">
         <div className=" container py-5">   
             <div className=" bg-white w-full p-6 mt-2  rounded-xl">
@@ -225,12 +224,7 @@ return(
         <div>Loading.....</div>
         }
         </div>
-        // :
-        // <div className="flex justify-center">
-        // <div className="text-xl font-bold p-6 border-2 border-red-700 rounded-xl shadow-2xl mt-[15%]">
-        //     {error.message}
-        // </div>
-        // </div>
+       
         }
         </>
     )
