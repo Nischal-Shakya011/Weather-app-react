@@ -56,7 +56,9 @@ function handleSearch(){
         // setIsLoading(false)
     }) 
     .catch(err =>{
-        console.log(err);
+        // console.log(err);
+        setError(err.response.data)
+        setIsLoading(false)
     })
 
     axios.get(`http://api.openweathermap.org/data/2.5/forecast?q=${search}&cnt=40&appid=${key}`)
@@ -67,7 +69,9 @@ function handleSearch(){
     })
     .catch(err =>{
         // console.log(err.response.data);
-        setError(err.response.data)
+        // setError(err.response.data)
+        setIsLoading(false)
+
     })
 
 }
@@ -110,8 +114,8 @@ return(
     return(
         <>
         {
-            !error 
-            ?
+            // !error 
+            // ?
         <div className="bg-zinc-200 p-6">
         <div className=" container py-5">   
             <div className=" bg-white w-full p-6 mt-2  rounded-xl">
@@ -158,12 +162,23 @@ return(
                 <div className="container">
                     <div className="flex justify-between">
             <div className="mt-5 font-bold text-2xl">Hourly Weather Forecast</div>
+            <div className="">
             <div className="flex gap-4">
-            <input type="text" className="outline-none p-2 rounded-lg" onChange={((e)=>{setSearch(e.target.value)})} placeholder="Search City"/>
+            <input type="text" className="outline-none p-2 rounded-lg" onChange={((e)=>{setSearch(e.target.value)
+            if(e.target.value)
+            {
+                setError("")
+            }
+            else{
+                setError("city not found")
+            }
+            })} placeholder="Search City"/>
             <button onClick={handleSearch} className={"bg-green-800 p-2 rounded-lg w-28 text-white text-semibold"}>Search</button>
-           { error
+            </div>
+            { error
             &&
-            <small>{error.message}</small>}
+            <small className="text-red-600">{error.message}</small>
+            }
             </div>
             </div>
 {
@@ -210,12 +225,12 @@ return(
         <div>Loading.....</div>
         }
         </div>
-        :
-        <div className="flex justify-center">
-        <div className="text-xl font-bold p-6 border-2 border-red-700 rounded-xl shadow-2xl mt-[15%]">
-            {error.message}
-        </div>
-        </div>
+        // :
+        // <div className="flex justify-center">
+        // <div className="text-xl font-bold p-6 border-2 border-red-700 rounded-xl shadow-2xl mt-[15%]">
+        //     {error.message}
+        // </div>
+        // </div>
         }
         </>
     )
