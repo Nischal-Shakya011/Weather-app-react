@@ -13,7 +13,7 @@ function App() {
     <>
     <Routes>
      <Route path='/' element={<Home/>}/>
-     
+
      <Route path='/weather' element={
      <Suspense fallback={<Loading />}>
      <LazyWeather/>
