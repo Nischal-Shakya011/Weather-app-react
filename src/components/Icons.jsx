@@ -7,6 +7,7 @@ import { BsCloudDrizzle } from "react-icons/bs";
 
 export default function Icon({weth}){
 // console.log(weth);
+
 let weatherIcon;
 switch(weth){
         case "Clouds":
